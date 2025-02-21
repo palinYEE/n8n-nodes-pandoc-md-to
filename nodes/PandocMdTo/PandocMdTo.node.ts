@@ -156,7 +156,7 @@ export class PandocMdTo implements INodeType {
 
 				// command 실행
 				const command = `pandoc ${args.join(' ')}`;
-				const { stdout, stderr } = await exec(command);
+				const { stderr: stderr } = await exec(command);
 				if (stderr) {
 					throw new NodeOperationError(this.getNode(), `Pandoc error: ${stderr}`);
 				}
