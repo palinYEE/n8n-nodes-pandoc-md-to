@@ -1,0 +1,23 @@
+{
+	"node": "PandocMdTo",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["transform"],
+	"subcategories": {
+		"transform": ["Files"]
+	},
+	"resources": {
+		"primaryDocumentation": [
+			{
+				"url": "https://github.com/palinYEE/n8n-nodes-pandoc-md-to"
+			}
+		]
+	},
+	"alias": ["pandoc", "convert", "document", "markdown", "docx", "pdf"],
+	"description": "Pandoc Markdown to PDF or docx",
+	"name": "Pandoc Md To",
+	"group": ["transform"],
+	"defaults": {
+		"name": "Pandoc Md To"
+	}
+}
