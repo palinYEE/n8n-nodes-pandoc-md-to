@@ -152,6 +152,7 @@ export class PandocMdTo implements INodeType {
 					outputPath,
 					'--template',
 					'eisvogel',
+					'--listings',
 				];
 
 				// command 실행
