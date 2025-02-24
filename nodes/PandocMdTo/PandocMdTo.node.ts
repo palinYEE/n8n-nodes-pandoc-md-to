@@ -134,7 +134,7 @@ export class PandocMdTo implements INodeType {
 				const inputPath = join(tempDir, `pandoc_input_${tempId}.md`);
 				const outputPath = join(tempDir, `pandoc_output_${tempId}`);
 
-				tempPaths.push(inputPath);
+				// tempPaths.push(inputPath);
 				tempPaths.push(outputPath);
 
 				// Write input file
@@ -199,7 +199,7 @@ export class PandocMdTo implements INodeType {
 				throw error;
 			} finally {
 				// Clean up temporary files
-				// await cleanupFiles(tempPaths);
+				await cleanupFiles(tempPaths);
 			}
 		}
 
