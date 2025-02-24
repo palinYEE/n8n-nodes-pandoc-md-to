@@ -6,7 +6,7 @@ import {
 	IBinaryKeyData,
 	NodeOperationError,
 } from 'n8n-workflow';
-import { writeFile, readFile, unlink, rmdir } from 'fs/promises';
+import { readFile, unlink, rmdir } from 'fs/promises';
 import { join } from 'path';
 import { v5 as uuidv5 } from 'uuid';
 import { exec as execCallback } from 'child_process';
