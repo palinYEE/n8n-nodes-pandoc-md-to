@@ -199,7 +199,7 @@ export class PandocMdTo implements INodeType {
 				throw error;
 			} finally {
 				// Clean up temporary files
-				await cleanupFiles(tempPaths);
+				// await cleanupFiles(tempPaths);
 			}
 		}
 
