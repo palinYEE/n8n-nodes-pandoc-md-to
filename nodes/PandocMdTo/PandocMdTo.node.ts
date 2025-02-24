@@ -119,6 +119,7 @@ export class PandocMdTo implements INodeType {
 				const toFormat = this.getNodeParameter('toFormat', i) as string;
 
 				const binaryData = items[i].binary?.[binaryPropertyName];
+				console.log('test', binaryData);
 				if (!binaryData) {
 					throw new NodeOperationError(
 						this.getNode(),
