@@ -119,7 +119,6 @@ export class PandocMdTo implements INodeType {
 				const toFormat = this.getNodeParameter('toFormat', i) as string;
 
 				const binaryData = items[i].binary?.[binaryPropertyName];
-				console.log('test', binaryData);
 				if (!binaryData) {
 					throw new NodeOperationError(
 						this.getNode(),
@@ -132,7 +131,7 @@ export class PandocMdTo implements INodeType {
 
 				// Create temporary file paths
 				const tempDir = './';
-				const inputPath = join(tempDir, `pandoc_input_${tempId}.md`);
+				const inputPath = join(tempDir, `pandoc_input_${tempId}`);
 				const outputPath = join(tempDir, `pandoc_output_${tempId}`);
 
 				// tempPaths.push(inputPath);
