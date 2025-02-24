@@ -6,7 +6,7 @@ import {
 	IBinaryKeyData,
 	NodeOperationError,
 } from 'n8n-workflow';
-import { readFile, unlink, rmdir } from 'fs/promises';
+import { readFile, writeFile, unlink, rmdir } from 'fs/promises';
 import { join } from 'path';
 import { v5 as uuidv5 } from 'uuid';
 import { exec as execCallback } from 'child_process';
@@ -39,11 +39,11 @@ export class PandocMdTo implements INodeType {
 		outputs: ['main'],
 		properties: [
 			{
-				displayName: 'Markdown File Path',
-				name: 'markdownFilePath',
+				displayName: 'Binary Property',
+				name: 'binaryPropertyName',
 				type: 'string',
-				default: '',
-				description: 'Path to the markdown file to convert',
+				default: 'data',
+				description: 'Name of the binary property that contains the file to convert',
 			},
 			{
 				displayName: 'To Format',
@@ -115,29 +115,33 @@ export class PandocMdTo implements INodeType {
 		for (let i = 0; i < items.length; i++) {
 			const tempPaths: string[] = [];
 			try {
-				const markdownFilePath = this.getNodeParameter('markdownFilePath', i) as string;
+				const binaryPropertyName = this.getNodeParameter('binaryPropertyName', i) as string;
 				const toFormat = this.getNodeParameter('toFormat', i) as string;
+				const binaryData = items[i].binary?.[binaryPropertyName];
 
-				if (!markdownFilePath) {
+				if (!binaryData) {
 					throw new NodeOperationError(
 						this.getNode(),
-						`No markdown file path found in property "${markdownFilePath}"`,
+						`No binary data found in property "${binaryPropertyName}"`,
 					);
 				}
-
 				// Generate deterministic UUID based on the input filename
-				const tempId = uuidv5(markdownFilePath || 'unnamed', NAMESPACE_UUID);
+				const tempId = uuidv5(binaryPropertyName || 'unnamed', NAMESPACE_UUID);
 
 				// Create temporary file paths
 				const tempDir = './';
+				const inputPath = join(tempDir, `pandoc_input_${tempId}`);
 				const outputPath = join(tempDir, `pandoc_output_${tempId}`);
 
-				// tempPaths.push(inputPath);
+				tempPaths.push(inputPath);
 				tempPaths.push(outputPath);
+
+				const buffer = Buffer.from(binaryData.data, 'base64');
+				await writeFile(inputPath, buffer);
 
 				// Build pandoc arguments
 				const args = [
-					markdownFilePath,
+					inputPath,
 					'--from',
 					'markdown',
 					'--to',
@@ -165,10 +169,10 @@ export class PandocMdTo implements INodeType {
 
 				// Create the new binary data for the main output
 				const newBinaryData: IBinaryKeyData = {
-					[markdownFilePath]: {
+					[binaryPropertyName]: {
 						data: outputContent.toString('base64'),
 						mimeType: PandocMdTo.getMimeType(toFormat),
-						fileName: PandocMdTo.getFileName(markdownFilePath || 'document', toFormat),
+						fileName: PandocMdTo.getFileName(binaryPropertyName || 'document', toFormat),
 					},
 				};
 
