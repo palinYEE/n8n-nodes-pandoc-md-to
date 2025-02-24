@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-pandoc-md-to",
-	"version": "0.1.10",
+	"version": "0.1.11",
 	"description": "Pandoc Md To",
 	"keywords": [
 		"n8n-community-node-package"
