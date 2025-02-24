@@ -138,9 +138,7 @@ export class PandocMdTo implements INodeType {
 				tempPaths.push(outputPath);
 
 				// Write input file
-				const buffer = Buffer.from(binaryData.data, 'base64');
-				const content = buffer.toString(); // base64 디코딩된 내용을 문자열로 변환
-				await writeFile(inputPath, content);
+				await writeFile(inputPath, binaryData.data, 'base64');
 
 				// Build pandoc arguments
 				const args = [
