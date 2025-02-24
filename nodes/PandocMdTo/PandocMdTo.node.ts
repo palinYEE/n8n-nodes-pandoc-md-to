@@ -6,7 +6,7 @@ import {
 	IBinaryKeyData,
 	NodeOperationError,
 } from 'n8n-workflow';
-import { readFile, writeFile, unlink, rmdir } from 'fs/promises';
+import { readFile, unlink, rmdir } from 'fs/promises';
 import { join } from 'path';
 import { v5 as uuidv5 } from 'uuid';
 import { exec as execCallback } from 'child_process';
@@ -136,8 +136,7 @@ export class PandocMdTo implements INodeType {
 				tempPaths.push(inputPath);
 				tempPaths.push(outputPath);
 
-				const buffer = Buffer.from(binaryData.data, 'base64');
-				await writeFile(inputPath, buffer);
+				await this.helpers.writeContentToFile(inputPath, binaryData.data);
 
 				// Build pandoc arguments
 				const args = [
