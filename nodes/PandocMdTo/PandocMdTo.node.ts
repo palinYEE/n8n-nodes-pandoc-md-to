@@ -138,13 +138,6 @@ export class PandocMdTo implements INodeType {
 
 				// Data to file
 				const binaryDataBuffer = await this.helpers.getBinaryDataBuffer(i, binaryPropertyName);
-				this.logger.info('Binary data info:', {
-					encoding: binaryData.encoding,
-					mimeType: binaryData.mimeType,
-					fileName: binaryData.fileName,
-					fileSize: binaryDataBuffer.length,
-				});
-
 				// 파일로 저장
 				await this.helpers.writeContentToFile(inputPath, binaryDataBuffer, 'w');
 
@@ -181,7 +174,7 @@ export class PandocMdTo implements INodeType {
 					[binaryPropertyName]: {
 						data: outputContent.toString('base64'),
 						mimeType: PandocMdTo.getMimeType(toFormat),
-						fileName: PandocMdTo.getFileName(binaryPropertyName || 'document', toFormat),
+						fileName: PandocMdTo.getFileName(binaryData.fileName || 'document', toFormat),
 					},
 				};
 
