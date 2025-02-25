@@ -138,7 +138,15 @@ export class PandocMdTo implements INodeType {
 				tempPaths.push(outputPath);
 
 				// Data to file
-				this.logger.info(binaryData.data);
+				this.logger.info('Binary data info:', {
+					encoding: binaryData.encoding,
+					mimeType: binaryData.mimeType,
+					fileName: binaryData.fileName,
+					fileSize: binaryData.data.length,
+					data: binaryData.data.substring(0, 100), // 처음 100자만 로깅
+				});
+
+				// 파일 저장 전후로 파일 크기 확인
 				const fileContent = Buffer.from(binaryData.data, BINARY_ENCODING);
 				await this.helpers.writeContentToFile(inputPath, fileContent, 'w');
 
