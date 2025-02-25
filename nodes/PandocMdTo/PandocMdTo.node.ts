@@ -58,6 +58,13 @@ export class PandocMdTo implements INodeType {
 				default: 'pdf',
 				description: 'Output format for the document',
 			},
+			{
+				displayName: 'Additional Options',
+				name: 'options',
+				type: 'string',
+				default: '',
+				description: 'Additional options for the pandoc command',
+			},
 		],
 	};
 
@@ -117,6 +124,7 @@ export class PandocMdTo implements INodeType {
 			try {
 				const binaryPropertyName = this.getNodeParameter('binaryPropertyName', i) as string;
 				const toFormat = this.getNodeParameter('toFormat', i) as string;
+				const options = this.getNodeParameter('options', i, '') as string;
 				const binaryData = items[i].binary?.[binaryPropertyName];
 
 				if (!binaryData) {
@@ -153,6 +161,10 @@ export class PandocMdTo implements INodeType {
 					'--template',
 					'eisvogel',
 				];
+
+				if (options) {
+					args.push(options);
+				}
 
 				// command 실행
 				const command = `pandoc ${args.join(' ')}`;
