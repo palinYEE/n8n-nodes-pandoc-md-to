@@ -137,7 +137,8 @@ export class PandocMdTo implements INodeType {
 				tempPaths.push(inputPath);
 				tempPaths.push(outputPath);
 
-				// 파일 쓰기
+				// Data to file
+				this.logger.info(binaryData.data);
 				const fileContent = Buffer.from(binaryData.data, BINARY_ENCODING);
 				await this.helpers.writeContentToFile(inputPath, fileContent, 'w');
 
