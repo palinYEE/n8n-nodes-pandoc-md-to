@@ -5,7 +5,6 @@ import {
 	INodeTypeDescription,
 	IBinaryKeyData,
 	NodeOperationError,
-	BINARY_ENCODING,
 } from 'n8n-workflow';
 import { readFile, unlink, rmdir } from 'fs/promises';
 import { join } from 'path';
@@ -138,17 +137,16 @@ export class PandocMdTo implements INodeType {
 				tempPaths.push(outputPath);
 
 				// Data to file
+				const binaryDataBuffer = await this.helpers.getBinaryDataBuffer(i, binaryPropertyName);
 				this.logger.info('Binary data info:', {
 					encoding: binaryData.encoding,
 					mimeType: binaryData.mimeType,
 					fileName: binaryData.fileName,
-					fileSize: binaryData.data.length,
-					data: binaryData.data.substring(0, 100), // 처음 100자만 로깅
+					fileSize: binaryDataBuffer.length,
 				});
 
-				// 파일 저장 전후로 파일 크기 확인
-				const fileContent = Buffer.from(binaryData.data, BINARY_ENCODING);
-				await this.helpers.writeContentToFile(inputPath, fileContent, 'w');
+				// 파일로 저장
+				await this.helpers.writeContentToFile(inputPath, binaryDataBuffer, 'w');
 
 				// Build pandoc arguments
 				const args = [
