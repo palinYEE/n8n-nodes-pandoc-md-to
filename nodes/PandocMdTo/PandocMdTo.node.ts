@@ -165,7 +165,6 @@ export class PandocMdTo implements INodeType {
 					// pandoc --reference-doc=custom-reference-yyj.docx sample.md --from markdown  --to docx --output sample.docx --highlight-style=tango
 					const referenceDocx = this.getNodeParameter('referenceDocx', i) as string;
 					if (referenceDocx) {
-						console.log(items[i].binary, referenceDocx);
 						const referenceDocxBinaryData = items[i].binary?.[referenceDocx];
 						if (!referenceDocxBinaryData) {
 							throw new NodeOperationError(
