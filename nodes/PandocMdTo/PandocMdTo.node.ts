@@ -46,6 +46,13 @@ export class PandocMdTo implements INodeType {
 				description: 'Name of the binary property that contains the file to convert',
 			},
 			{
+				displayName: 'Reference Docx',
+				name: 'referenceDocx',
+				type: 'string',
+				default: 'referenceDocx',
+				description: 'Name of the binary property that contains the file to use reference docx',
+			},
+			{
 				displayName: 'To Format',
 				name: 'toFormat',
 				type: 'options',
@@ -53,6 +60,10 @@ export class PandocMdTo implements INodeType {
 					{
 						name: 'PDF',
 						value: 'pdf',
+					},
+					{
+						name: 'DOCX',
+						value: 'docx',
 					},
 				],
 				default: 'pdf',
@@ -100,7 +111,6 @@ export class PandocMdTo implements INodeType {
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData();
 		const returnData: INodeExecutionData[] = [];
-		const imageData: INodeExecutionData[] = [];
 
 		const cleanupFiles = async (paths: string[]): Promise<void> => {
 			await Promise.all(
@@ -150,17 +160,37 @@ export class PandocMdTo implements INodeType {
 				await this.helpers.writeContentToFile(inputPath, binaryDataBuffer, 'w');
 
 				// Build pandoc arguments
-				const args = [
-					inputPath,
-					'--from',
-					'markdown',
-					'--to',
-					toFormat,
-					'--output',
-					outputPath,
-					'--template',
-					'eisvogel',
-				];
+				const args = [inputPath, '--from', 'markdown', '--to', toFormat, '--output', outputPath];
+				if (toFormat === 'docx') {
+					// pandoc --reference-doc=custom-reference-yyj.docx sample.md --from markdown  --to docx --output sample.docx --highlight-style=tango
+					const referenceDocx = this.getNodeParameter('referenceDocx', i) as string;
+					if (referenceDocx) {
+						console.log(items[i].binary, referenceDocx);
+						const referenceDocxBinaryData = items[i].binary?.[referenceDocx];
+						if (!referenceDocxBinaryData) {
+							throw new NodeOperationError(
+								this.getNode(),
+								`No binary data found in property "${referenceDocx}"`,
+							);
+						}
+						const referenceDocxPath = join(tempDir, `pandoc_reference_docx_${tempId}.docx`);
+						const referenceDocxBinaryDataBuffer = await this.helpers.getBinaryDataBuffer(
+							i,
+							referenceDocx,
+						);
+						// 파일로 저장
+						await this.helpers.writeContentToFile(
+							referenceDocxPath,
+							referenceDocxBinaryDataBuffer,
+							'w',
+						);
+						tempPaths.push(referenceDocxPath);
+						args.push(`--reference-doc=${referenceDocxPath}`);
+					}
+				} else if (toFormat === 'pdf') {
+					args.push('--template');
+					args.push('eisvogel');
+				}
 
 				if (options) {
 					args.push(options);
@@ -215,6 +245,6 @@ export class PandocMdTo implements INodeType {
 			}
 		}
 
-		return [returnData, imageData];
+		return [returnData];
 	}
 }
