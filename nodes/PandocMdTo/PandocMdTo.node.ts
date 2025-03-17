@@ -186,9 +186,6 @@ export class PandocMdTo implements INodeType {
 						tempPaths.push(referenceDocxPath);
 						args.push(`--reference-doc=${referenceDocxPath}`);
 					}
-				} else if (toFormat === 'pdf') {
-					args.push('--template');
-					args.push('eisvogel');
 				}
 
 				if (options) {
